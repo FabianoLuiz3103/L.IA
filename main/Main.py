@@ -28,7 +28,6 @@ ultimo_tempo = time.time()
 tempo_entre_letras = 2.5
 mostrar_limpeza = False
 tempo_limpeza = 0
-faz_o_l = False
 
 while True:
     success, img = cap.read()
@@ -65,9 +64,7 @@ while True:
             elif alfabeto.letra_F(hand): letra = "F"
             elif alfabeto.letra_G(hand): letra = "G"
             elif alfabeto.letra_I(hand): letra = "I"
-            elif alfabeto.letra_L(hand):
-                letra = "L"
-                faz_o_l = True
+            elif alfabeto.letra_L(hand): letra = "L"
             elif alfabeto.letra_O(hand): letra = "O"
             elif alfabeto.letra_M(hand): letra = "M"
             elif alfabeto.letra_N(hand): letra = "N"
