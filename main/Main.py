@@ -124,7 +124,7 @@ while True:
                     tempo_fiap = time.time()
                 
                 if frase == frase_eae and not mostrar_eae:
-                    falar(frase_eae)
+                    falar("EAE GALERA!")
                     mostrar_eae = True
                     tempo_eae = time.time()
 
