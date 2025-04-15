@@ -83,7 +83,7 @@ class Alfabeto:
         )
         return indicador_esticado and polegar_proximo and dedos_dobrados
 
-    def letra_E(self, ponto):
+    def letra_E(self, ponto): 
         ponto = map_pontos_referencia(ponto)
         dedos_fechados = (
             ponto["INDEX_TIP"].y > ponto["INDEX_PIP"].y and
