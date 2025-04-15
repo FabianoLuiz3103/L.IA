@@ -22,12 +22,34 @@ fundo_escuro = np.zeros((480, 640, 3), dtype=np.uint8)
 cor_texto = (0, 255, 0) 
 cor_limpeza = (0, 0, 255)  
 
+fiap = cv2.imread("images/fiap.png")
+fiap = cv2.resize(fiap, (200,200))
+mostrar_fiap = False
+tempo_fiap = 0
+frase_fiap = "FIAP"
+
+eae = cv2.imread("images/eae.png")
+eae = cv2.resize(eae, (200,200))
+eae_hsv = cv2.cvtColor(eae, cv2.COLOR_BGR2HSV)
+lower_white = np.array([0, 0, 200])
+upper_white = np.array([180, 30, 255])
+mask = cv2.inRange(eae_hsv, lower_white, upper_white)
+mask_inv = cv2.bitwise_not(mask)
+eae_sem_fundo = cv2.bitwise_and(eae, eae, mask=mask_inv)
+mostrar_eae = False
+tempo_eae = 0
+frase_eae = "EAE"
+
 frase = ""
 ultima_letra = ""
+
+
+
 ultimo_tempo = time.time()
-tempo_entre_letras = 2.5
+tempo_entre_letras = 2
 mostrar_limpeza = False
 tempo_limpeza = 0
+
 
 while True:
     success, img = cap.read()
@@ -74,6 +96,16 @@ while True:
                 frase += letra
                 ultima_letra = letra
                 ultimo_tempo = time.time()
+
+                if frase == frase_fiap and not mostrar_fiap:
+                    mostrar_fiap = True
+                    tempo_fiap = time.time()
+                
+                if frase == frase_eae and not mostrar_eae:
+                    mostrar_eae = True
+                    tempo_eae = time.time()
+
+                
     if mostrar_limpeza:
         if time.time() - tempo_limpeza < 1:
             cv2.putText(output, "FRASE LIMPA!", (output.shape[1]//2 - 200, output.shape[0]//2), cv2.FONT_HERSHEY_SIMPLEX, 2, cor_limpeza, 3)
@@ -84,6 +116,20 @@ while True:
     
     img_pequena = cv2.resize(img, (160, 120))
     output[360:480, 480:640] = img_pequena
+
+    if mostrar_fiap and time.time() - tempo_fiap < 2:
+        output[100:300, 220:420] = fiap
+    else:
+        mostrar_fiap = False
+
+    if mostrar_eae and time.time() - tempo_eae < 2:
+        roi = output[100:300, 220:420]
+        img_fg = cv2.bitwise_and(eae_sem_fundo, eae_sem_fundo)
+        img_bg = cv2.bitwise_and(roi, roi, mask=mask)
+        dst = cv2.add(img_bg, img_fg)
+        output[100:300, 220:420] = dst
+    else:
+        mostrar_eae = False
 
     cv2.imshow("Tradutor de Libras - Modo Analise", output)
     
